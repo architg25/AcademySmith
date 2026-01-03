@@ -1121,8 +1121,10 @@ namespace AcademySmith
             // Max all staff abilities to 100
             void MaxAllStaffAbilities()
             {
-                int staffCount = 0;
+                int teacherCount = 0;
+                int otherStaffCount = 0;
                 int abilityCount = 0;
+                int failedCount = 0;
 
                 foreach (CharacterEntity item in Module<CharacterModule>.Instance.AttendanceList)
                 {
@@ -1131,12 +1133,12 @@ namespace AcademySmith
                         item.Job.JobType == CharacterJobType.president ||
                         item.Job.JobType == CharacterJobType.otherStaff)
                     {
-                        Staff staffMember = item.Job as Staff;
-                        if (staffMember != null && staffMember.abilityDict != null)
+                        // Try casting to Teacher first
+                        Teacher teacherMember = item.Job as Teacher;
+                        if (teacherMember != null && teacherMember.abilityDict != null)
                         {
-                            staffCount++;
-                            // Max all abilities to 100
-                            foreach (var ability in staffMember.abilityDict)
+                            teacherCount++;
+                            foreach (var ability in teacherMember.abilityDict)
                             {
                                 if (ability.Value != null)
                                 {
@@ -1145,12 +1147,33 @@ namespace AcademySmith
                                 }
                             }
                         }
+                        else
+                        {
+                            // Try casting to Staff for other staff types
+                            Staff staffMember = item.Job as Staff;
+                            if (staffMember != null && staffMember.abilityDict != null)
+                            {
+                                otherStaffCount++;
+                                foreach (var ability in staffMember.abilityDict)
+                                {
+                                    if (ability.Value != null)
+                                    {
+                                        ability.Value.RawValue = 100f;
+                                        abilityCount++;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                failedCount++;
+                            }
+                        }
                     }
                 }
 
                 OnTis(language == 1 ?
-                    $"已修改 {staffCount} 位员工，共 {abilityCount} 项能力" :
-                    $"Modified {staffCount} staff, {abilityCount} abilities total");
+                    $"教师:{teacherCount} 其他员工:{otherStaffCount} 能力:{abilityCount} 失败:{failedCount}" :
+                    $"Teachers:{teacherCount} Staff:{otherStaffCount} Abilities:{abilityCount} Failed:{failedCount}");
             }
 
             // Unlock all certificates for all staff
@@ -1172,6 +1195,11 @@ namespace AcademySmith
                     CertificateBigType.staff_chef,
                 };
 
+                int teacherCount = 0;
+                int otherStaffCount = 0;
+                int certCount = 0;
+                int failedCount = 0;
+
                 foreach (CharacterEntity item in Module<CharacterModule>.Instance.AttendanceList)
                 {
                     // Check if character is staff or teacher (including president)
@@ -1179,20 +1207,49 @@ namespace AcademySmith
                         item.Job.JobType == CharacterJobType.president ||
                         item.Job.JobType == CharacterJobType.otherStaff)
                     {
-                        Staff staffMember = item.Job as Staff;
-                        if (staffMember != null)
+                        // Try casting to Teacher first
+                        Teacher teacherMember = item.Job as Teacher;
+                        if (teacherMember != null)
                         {
-                            // Unlock all certificates
+                            teacherCount++;
+                            // Unlock all certificates for teacher
                             foreach (CertificateBigType types in certificateBigType)
                             {
                                 foreach (CertificateData certData in Module<CultivationModule>.Instance.certificateBigTypeDict[types])
                                 {
-                                    staffMember.UnlockCertificate(certData.Id, true);
+                                    teacherMember.UnlockCertificate(certData.Id, true);
+                                    certCount++;
                                 }
+                            }
+                        }
+                        else
+                        {
+                            // Try casting to Staff for other staff types
+                            Staff staffMember = item.Job as Staff;
+                            if (staffMember != null)
+                            {
+                                otherStaffCount++;
+                                // Unlock all certificates for staff
+                                foreach (CertificateBigType types in certificateBigType)
+                                {
+                                    foreach (CertificateData certData in Module<CultivationModule>.Instance.certificateBigTypeDict[types])
+                                    {
+                                        staffMember.UnlockCertificate(certData.Id, true);
+                                        certCount++;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                failedCount++;
                             }
                         }
                     }
                 }
+
+                OnTis(language == 1 ?
+                    $"教师:{teacherCount} 其他员工:{otherStaffCount} 证书:{certCount} 失败:{failedCount}" :
+                    $"Teachers:{teacherCount} Staff:{otherStaffCount} Certificates:{certCount} Failed:{failedCount}");
             }
 
 
