@@ -963,7 +963,6 @@ namespace AcademySmith
                 if (GUILayout.Button(language == 1 ? "所有员工能力最大化(100)" : "Max All Staff Abilities (100)", ButtonStyle))
                 {
                     MaxAllStaffAbilities();
-                    OnTis(language == 1 ? "已将所有员工能力设置为100" : "All staff abilities set to 100");
                 }
 
                 if (GUILayout.Button(language == 1 ? "解锁所有员工证书" : "Unlock All Staff Certificates", ButtonStyle))
@@ -1122,6 +1121,9 @@ namespace AcademySmith
             // Max all staff abilities to 100
             void MaxAllStaffAbilities()
             {
+                int staffCount = 0;
+                int abilityCount = 0;
+
                 foreach (CharacterEntity item in Module<CharacterModule>.Instance.AttendanceList)
                 {
                     // Check if character is staff or teacher (including president)
@@ -1130,16 +1132,25 @@ namespace AcademySmith
                         item.Job.JobType == CharacterJobType.otherStaff)
                     {
                         Staff staffMember = item.Job as Staff;
-                        if (staffMember != null)
+                        if (staffMember != null && staffMember.abilityDict != null)
                         {
+                            staffCount++;
                             // Max all abilities to 100
                             foreach (var ability in staffMember.abilityDict)
                             {
-                                ability.Value.RawValue = 100f;
+                                if (ability.Value != null)
+                                {
+                                    ability.Value.RawValue = 100f;
+                                    abilityCount++;
+                                }
                             }
                         }
                     }
                 }
+
+                OnTis(language == 1 ?
+                    $"已修改 {staffCount} 位员工，共 {abilityCount} 项能力" :
+                    $"Modified {staffCount} staff, {abilityCount} abilities total");
             }
 
             // Unlock all certificates for all staff
