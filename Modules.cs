@@ -30,7 +30,6 @@ using UnityEngine.InputSystem;
 
 namespace AcademySmith
 {
-    // 游戏中的模块
     // In-game modules
     public class Modules : M_GameModuleBase, IArchiveableModule, IArchiveBeforeLoadProcessModule, IArchiveAfterLoadProcessModule, IArchiveBeforeSaveProcessModule, IArchiveAfterSaveProcessModule
     {
@@ -49,7 +48,7 @@ namespace AcademySmith
             private bool showCharacterModifcationWindow = false;
             private bool showRoleModifcationWindow = false;
 
-            private bool showFPSInMain = false; // 新增的变量，控制FPS是否在主窗口内显示
+            private bool showFPSInMain = false; // New variable to control whether FPS is displayed in the main window
             public Rect windowRect = new Rect(300, 300, 200, 200);
             private Rect fpsWindowRect = new Rect(500, 300, 200, 100);
             private Rect CurrencyWindowRect = new Rect(500, 300, 200, 200);
@@ -74,33 +73,33 @@ namespace AcademySmith
             public int language = 1;
             public int FonSize = 18;
 
-            //公告部分
+            // Announcement section
             private string NoticeTitle;
             private string NoticeContent;
 
 
-            //界面设置
+            // Interface settings
             public string Home_widthStr = "300";
             public string Home_heightStr = "0";
 
-            //全地图解锁
+            // Full map unlock
             private bool Exposure = false;
 
             private CommonButton UIbutton;
             public static Sprite CreateSpriteFromPath(string imagePath)
             {
-                // 加载图片数据
+                // Load image data
                 byte[] imageData = File.ReadAllBytes(imagePath);
 
-                // 创建Texture2D
+                // Create Texture2D
                 Texture2D texture = new Texture2D(2, 2);
-                texture.LoadRawTextureData(imageData); // 加载图片数据到Texture2D
+                texture.LoadRawTextureData(imageData); // Load image data to Texture2D
 
-                // 从Texture2D创建Sprite
+                // Create Sprite from Texture2D
                 Sprite sprite = Sprite.Create(
                     texture,
                     new Rect(0, 0, texture.width, texture.height),
-                    new Vector2(0.5f, 0.5f), // Sprite的原点
+                    new Vector2(0.5f, 0.5f), // Sprite origin point
                     100.0f // Pixels per Unit
                 );
 
@@ -135,7 +134,7 @@ namespace AcademySmith
                 CommonMessageBox.NewBox(NoticeTitle, NoticeContent, (Sprite)null /*CreateSpriteFromPath("Image1.png")*/, (IList<CommonButton.CommonButtonConfig>)new CommonButton.CommonButtonConfig[1] { CommonButton.NewConfirmConfig(Singleton<GameManagerV2>.Instance.SaveGame) }, canClose: false, (CommonMessageBox.OnMessageClose)null, "CommonMessageBox", uiPause: true, Mask: true, 999f);
                 /*CommonMessageBox.NewSoftMessageBoxV2(NoticeTitle, NoticeContent, CreateSpriteFromPath("Image1.png"), (IList<CommonButton.CommonButtonConfig>)new CommonButton.CommonButtonConfig[1] { CommonButton.NewConfirmConfig(Singleton<GameManagerV2>.Instance.SaveGame) },  (CommonMessageBox.OnMessageClose)null, "CommonMessageBox",  Mask: true, 999f);*/
 
-                //初始化搜索列表功能
+                // Initialize search list functionality
                 InitSeachModeList();
 
             }
@@ -210,7 +209,7 @@ namespace AcademySmith
                 aboutRect.height = 0f;
             }
 
-            //语言设置
+            // Language settings
             private void DrawAllWindows()
             {
                 if (windowRect.width > GetScaledWidth(200)) 
@@ -891,7 +890,7 @@ namespace AcademySmith
             private Sex sex;
             private string SearchContent = "";
 
-            //角色属性修改
+            // Character attribute modification
             void DrawCharacterModificationWindow(int mainWindowID)
             {
                 SearchMode = new string[]
@@ -931,7 +930,7 @@ namespace AcademySmith
                     {language == 1 ? "其他" : "other", Sex.other}
                 };
 
-                //防止窗口过于小
+                // Prevent window from being too small
                 if (CharacterModifcationWindowRect.width < GetScaledWidth(200))
                 {
                     CharacterModifcationWindowRect.width = GetScaledWidth(200);
@@ -986,7 +985,7 @@ namespace AcademySmith
                     GUILayout.EndHorizontal();
                 }
 
-                //职业筛选
+                // Career filter
                 if (SearchModeList[language == 1 ? "职业" : "career"])
                 {
                     GUILayout.Label(language == 1 ? "职业:" : "Career:", LabelStyle);
@@ -1006,7 +1005,7 @@ namespace AcademySmith
                 }
 
 
-                //性别筛选
+                // Gender filter
                 if (SearchModeList[language == 1 ? "性别" : "gender"])
                 {
                     GUILayout.Label(language == 1 ? "性别" : "gender", LabelStyle);
@@ -1025,7 +1024,7 @@ namespace AcademySmith
                     }
                 }
 
-                //搜索
+                // Search
                 if (SearchModeList[language == 1 ? "搜索(仅限名字)" : "Search (name only)"])
                 {
                     GUILayout.BeginHorizontal();
@@ -1033,11 +1032,11 @@ namespace AcademySmith
                     GUILayout.EndHorizontal();
                 }
 
-                //人员生成
+                // Generate personnel list
                 CharacterModifcationWindowRect.height = GetScaledHeight(900);
                 Rect srollRect = new Rect(CharacteModificationX, CharacteModificationY, CharacterModifcationWindowRect.width, CharacterModifcationWindowRect.height - GetScaledHeight(500));
-                GUILayout.BeginArea(srollRect); // 定义滚动区域的大小和位置
-                CharacterModificationScrollPosition = GUILayout.BeginScrollView(CharacterModificationScrollPosition); // 开始可滚动区域，并存储滚动位置
+                GUILayout.BeginArea(srollRect); // Define scroll area size and position
+                CharacterModificationScrollPosition = GUILayout.BeginScrollView(CharacterModificationScrollPosition); // Begin scrollable area and store scroll position
 
 
                 foreach (CharacterEntity item in Module<CharacterModule>.Instance.AttendanceList)
@@ -1069,8 +1068,8 @@ namespace AcademySmith
                     }
                 }
 
-                GUILayout.EndScrollView(); // 结束可滚动区域
-                GUILayout.EndArea(); // 结束区域
+                GUILayout.EndScrollView(); // End scrollable area
+                GUILayout.EndArea(); // End area
 
 
 
@@ -1103,32 +1102,32 @@ namespace AcademySmith
             }
 
 
-            //公用
+            // Common
             private string CharacterName;
 
-            //学生
+            // Student
             private float Memory;
             private float Intelligence;
             private float Perceptivity;
             private float Corporeity;
 
-            //老师
-            private float TeachingAbility;//教学
-            private float ResearchingAbility;//科研
-            private float ManagingAbility;//管理
-            private float CultivatingAbility;//培养
-            private float MedicalAbility;//医疗
-            private float CookingAbility;//烹饪
-            private float SaleAbility;//销售
-            private float SecurityAbility;//安保
-            private float AllAbility;//全部
+            // Teacher
+            private float TeachingAbility; // Teaching
+            private float ResearchingAbility; // Research
+            private float ManagingAbility; // Management
+            private float CultivatingAbility; // Cultivation
+            private float MedicalAbility; // Medical
+            private float CookingAbility; // Cooking
+            private float SaleAbility; // Sales
+            private float SecurityAbility; // Security
+            private float AllAbility; // All
             private int staffabliityNum = 0;
-            private int staffNum = 0;//薪资
-            private int staffLeve = 0;//等级
+            private int staffNum = 0; // Salary
+            private int staffLeve = 0; // Level
 
             private Dictionary<string, float> staffAbilityDictNum;
 
-            //角色其他属性修改
+            // Character other attributes modification
             void DrawCharacterWindow(int mainWindowID)
             {
                 GUIStyle LabelStyle = new GUIStyle(GUI.skin.label);
@@ -1141,7 +1140,7 @@ namespace AcademySmith
                 TextField.fontSize = FonSize;
 
 
-                //家境
+                // Family circumstances
                 string[] familyCircumstancesList = new string[]
                 {
                     language == 1 ? "超级贫困" : "SuperPoor",
@@ -1162,7 +1161,7 @@ namespace AcademySmith
                 };
 
 
-                //出现方式
+                // Travel mode
                 string[] appearanceWayList = new string[]
                 {
                     language == 1 ? "步行" : "walk",
@@ -1186,7 +1185,7 @@ namespace AcademySmith
                 };
 
 
-                //职业能力
+                // Staff abilities
                 string[] staffAbilityList = new string[]
                 {
                     language == 1 ? "教学" : "Teaching",
@@ -1261,7 +1260,7 @@ namespace AcademySmith
                         GUILayout.EndHorizontal();
                     }
 
-                    #region 薪资与等级
+                    #region Salary and Level
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(language == 1 ? "薪资调整" : "Salary Adjustment", LabelStyle);
                     GUILayout.Label(language == 1 ? "老师等级" : "Teacher level", LabelStyle);
@@ -1416,7 +1415,7 @@ namespace AcademySmith
             }
 
 
-            //证书修改界面
+            // Certificate modification window
             private Vector2 CertificateScrollPosition = Vector2.zero;
             void DrawCertificateWindow(int mainWindowID)
             {
@@ -1467,8 +1466,8 @@ namespace AcademySmith
 
 
 
-                GUILayout.BeginArea(new Rect(0, GetScaledHeight(400), RoleModifcationWindowRect.width, GetScaledHeight(600))); // 定义滚动区域的大小和位置
-                CertificateScrollPosition = GUILayout.BeginScrollView(CertificateScrollPosition); // 开始可滚动区域，并存储滚动位置
+                GUILayout.BeginArea(new Rect(0, GetScaledHeight(400), RoleModifcationWindowRect.width, GetScaledHeight(600))); // Define scroll area size and position
+                CertificateScrollPosition = GUILayout.BeginScrollView(CertificateScrollPosition); // Begin scrollable area and store scroll position
                 for(int i = 0;i< certificateBigType.Length;i++)
                 {
                     GUILayout.BeginHorizontal();
@@ -1482,8 +1481,8 @@ namespace AcademySmith
                     GUILayout.EndHorizontal();
 
                 }
-                GUILayout.EndScrollView(); // 结束可滚动区域
-                GUILayout.EndArea(); // 结束区域
+                GUILayout.EndScrollView(); // End scrollable area
+                GUILayout.EndArea(); // End area
 
                 GUILayout.Space(10);
 
@@ -1497,7 +1496,7 @@ namespace AcademySmith
             }
 
 
-            //设置界面
+            // Settings window
             void DrawSettingsWindow(int mainWindowID)
             {
                 GUIStyle LabelStyle = new GUIStyle(GUI.skin.label);
@@ -1552,28 +1551,28 @@ namespace AcademySmith
                 GUI.DragWindow();
             }
 
-            // 函数用于根据当前屏幕宽度计算缩放后的宽度
+            // Function to calculate scaled width based on current screen width
             float GetScaledWidth(float targetWidth)
             {
-                // 获取屏幕宽度
+                // Get screen width
                 float screenWidth = Screen.width;
 
-                // 计算缩放因子
+                // Calculate scale factor
                 float scaleFactor = screenWidth / 1920f;
 
-                // 返回缩放后的宽度
+                // Return scaled width
                 return targetWidth * scaleFactor;
             }
 
             float GetScaledHeight(float targetHeight)
             {
-                // 获取屏幕宽度
+                // Get screen height
                 float screenHeight = Screen.height;
 
-                // 计算缩放因子
+                // Calculate scale factor
                 float scaleFactor = targetHeight / 1080f;
 
-                // 返回缩放后的宽度
+                // Return scaled height
                 return targetHeight * scaleFactor;
             }
             void DrawAboutWindow(int windowID)
@@ -1611,9 +1610,9 @@ namespace AcademySmith
 
             private void OnFestivalStart(FestivalConfig config)
             {
-                // 这里是当节日开始时执行的代码
+                // Code executed when festival starts
                 Debug.Log("Festival started with config: " + config.name);
-                // 根据config做些事情...
+                // Do something based on config...
             }
 
             private void OnDestroy()
@@ -1629,11 +1628,11 @@ namespace AcademySmith
             }
 
 
-            //初始化
+            // Initialize
             void InitSeachModeList()
             {
 
-                //一级菜单
+                // Primary menu
                 SearchModeList = new Dictionary<string, bool>()
                 {
                     {language == 1 ? "性别" : "gender", false},
@@ -1656,7 +1655,6 @@ namespace AcademySmith
         }
         private Mono mono;
 
-        // 游戏上下文接口
         // Game context interface
         M_IGameContext gameContext;
         M_ITimeContext timeContext;
@@ -1665,16 +1663,13 @@ namespace AcademySmith
 
 
 
-        // 服务容器
-        // service container
+        // Service container
         IServiceContainer serviceContainer;
 
         protected override void OnCreate()
         {
-            // 从模组上下文中获取游戏上下文接口
             // Gets the game context interface from the module context
             modContext.RunnerContext.TryGetContext(out gameContext);
-            // 获取服务容器
             // Get service container
             serviceContainer = gameContext.Publish.FirstTWithGC<IServiceContainer>();
             uiContext = gameContext.UIContext;
@@ -1683,14 +1678,14 @@ namespace AcademySmith
 
         protected override void OnLoad()
         {
-            // 模块加载
+            // Module load
             modContext.LogError("Module Load");
             timeContext.OnMinuteUpdate += OpenFPS;
         }
 
         protected override void OnStart()
         {
-            // 模块启动
+            // Module start
             modContext.LogError("Module Start");
             timeContext.OnMinuteUpdate += OnMinuteUpdate;
 
@@ -1703,63 +1698,56 @@ namespace AcademySmith
 
         void IArchiveBeforeLoadProcessModule.OnBeforeLoadArchive(ArchiveContext archiveContext)
         {
-            // 开始加载存档
+            // Start loading archive
             modContext.LogError("Before Load Archive");
 
         }
 
         void IArchiveableModule.OnLoadArchive(ArchiveContext archiveContext)
         {
-            // 加载存档
+            // Load archive
             modContext.LogError("Load Archive");
             if (archiveContext.IsNewArchive)
             {
-                // TODO: 新游戏处理
-                // TODO: new game process
+                // TODO: New game process
             }
             else
             {
-                // 获取存档数据
                 // Get archive data
                 var saveData = archiveContext.GetData<SaveData>();
                 mono.Home_widthStr = saveData.H_width.ToString();
                 mono.Home_heightStr = saveData.H_height.ToString();
                 mono.FonSize = saveData.FontSize;
                 mono.UIUpdate();
-                // TODO: 非新游戏处理
-                // TODO: not new game process
+                // TODO: Not new game process
             }
         }
 
         void IArchiveAfterLoadProcessModule.OnAfterLoadArchive(ArchiveContext archiveContext)
         {
-            // 结束加载存档
+            // Finish loading archive
             modContext.LogError("After Load Archive");
 
         }
 
         void IArchiveBeforeSaveProcessModule.OnBeforeSaveArchive(ArchiveContext archiveContext)
         {
-            // 开始保存存档
+            // Start saving archive
             modContext.LogError("Before Save Archive");
 
         }
 
         void IArchiveableModule.OnSaveArchive(ArchiveContext archiveContext)
         {
-            // 保存存档
+            // Save archive
             modContext.LogError("Save Archive");
 
-            // 获取模块管理器
             // Gets the module manager
             var moduleManager = serviceContainer.GetService<ModuleManager>();
-            // 获取地图模块
             // Get map module
             var mapModule = moduleManager.GetModule<MapModule>();
-            // 获取角色模块
             // Get character module
             var characterModule = moduleManager.GetModule<CharacterModule>();
-            // 获取用于存档的数据
             // Gets data for archiving
 
 
@@ -1773,13 +1761,13 @@ namespace AcademySmith
 
         void IArchiveAfterSaveProcessModule.OnAfterSaveArchive(ArchiveContext archiveContext)
         {
-            // 结束保存存档
+            // Finish saving archive
             modContext.LogError("After Save Archive");
         }
 
         protected override void OnStop()
         {
-            // 模块停止
+            // Module stop
             modContext.LogError("Module Stop");
             if ((bool)mono)
             {
@@ -1790,13 +1778,13 @@ namespace AcademySmith
 
         protected override void OnUnload()
         {
-            // 模块卸载
+            // Module unload
             modContext.LogError("Module Unload");
         }
 
         protected override void OnDispose()
         {
-            // 模块释放
+            // Module dispose
             modContext.LogError("Module Dispose");
         }
         void OnMinuteUpdate()
@@ -1831,10 +1819,8 @@ namespace AcademySmith
             }
         }
 
-        // 数据唯一标识
         // Data unique identification
         [ArchiveDataIdentity("Mod.TestModule")]
-        // 可序列化标识
         // Serializable identifier
         [Serializable]
         class SaveData : ArchiveData
