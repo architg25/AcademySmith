@@ -955,6 +955,24 @@ namespace AcademySmith
                 {
                     showCharacterModifcationWindow = false;
                 }
+
+                // Batch operations for all staff
+                GUILayout.Space(10);
+                GUILayout.Label(language == 1 ? "批量操作（所有员工/老师）" : "Batch Operations (All Staff/Teachers)", LabelStyle);
+
+                if (GUILayout.Button(language == 1 ? "所有员工能力最大化(100)" : "Max All Staff Abilities (100)", ButtonStyle))
+                {
+                    MaxAllStaffAbilities();
+                    OnTis(language == 1 ? "已将所有员工能力设置为100" : "All staff abilities set to 100");
+                }
+
+                if (GUILayout.Button(language == 1 ? "解锁所有员工证书" : "Unlock All Staff Certificates", ButtonStyle))
+                {
+                    UnlockAllStaffCertificates();
+                    OnTis(language == 1 ? "已解锁所有员工的所有证书" : "All certificates unlocked for all staff");
+                }
+
+                GUILayout.Space(10);
                 GUIStyle ButtonStyles = new GUIStyle(GUI.skin.button);
 
                 GUILayout.Label(language == 1 ? "查找模式" : "Search Mode", LabelStyle);
@@ -1098,6 +1116,71 @@ namespace AcademySmith
                     characterEntity = item;
                     teacher = item.Job as Teacher;
                     staff = item.Job as Staff;
+                }
+            }
+
+            // Max all staff abilities to 100
+            void MaxAllStaffAbilities()
+            {
+                foreach (CharacterEntity item in Module<CharacterModule>.Instance.AttendanceList)
+                {
+                    // Check if character is staff or teacher (including president)
+                    if (item.Job.JobType == CharacterJobType.teacher ||
+                        item.Job.JobType == CharacterJobType.president ||
+                        item.Job.JobType == CharacterJobType.otherStaff)
+                    {
+                        Staff staffMember = item.Job as Staff;
+                        if (staffMember != null)
+                        {
+                            // Max all abilities to 100
+                            foreach (var ability in staffMember.abilityDict)
+                            {
+                                ability.Value.RawValue = 100f;
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Unlock all certificates for all staff
+            void UnlockAllStaffCertificates()
+            {
+                CertificateBigType[] certificateBigType = new CertificateBigType[]
+                {
+                    CertificateBigType.principal,
+                    CertificateBigType.management,
+                    CertificateBigType.research,
+                    CertificateBigType.service,
+                    CertificateBigType.teaching_culture,
+                    CertificateBigType.teaching_science,
+                    CertificateBigType.teaching_art,
+                    CertificateBigType.teaching_sports,
+                    CertificateBigType.staff_security,
+                    CertificateBigType.staff_doctor,
+                    CertificateBigType.staff_sell,
+                    CertificateBigType.staff_chef,
+                };
+
+                foreach (CharacterEntity item in Module<CharacterModule>.Instance.AttendanceList)
+                {
+                    // Check if character is staff or teacher (including president)
+                    if (item.Job.JobType == CharacterJobType.teacher ||
+                        item.Job.JobType == CharacterJobType.president ||
+                        item.Job.JobType == CharacterJobType.otherStaff)
+                    {
+                        Staff staffMember = item.Job as Staff;
+                        if (staffMember != null)
+                        {
+                            // Unlock all certificates
+                            foreach (CertificateBigType types in certificateBigType)
+                            {
+                                foreach (CertificateData certData in Module<CultivationModule>.Instance.certificateBigTypeDict[types])
+                                {
+                                    staffMember.UnlockCertificate(certData.Id, true);
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
